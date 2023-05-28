@@ -57,7 +57,7 @@ namespace RxProj.Main
 
             CascadeTab.Controls.Add(new Splitter());
 
-            CascadeTab.Controls.Add(new Button { Text = "Click me!", AutoSize = true, Dock = DockStyle.Bottom, Height = 320 });
+            CascadeTab.Controls.Add(new Button { Text = "Click me!", AutoSize = true, Dock = DockStyle.Left });
 
 
         }

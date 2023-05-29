@@ -6,6 +6,8 @@ namespace RxProj.Core
     {
         public readonly List<RxNode> Nodes = new List<RxNode>();
         public double InputPower = 0.0;
+        public double InputImpedance = 50.0;
+        public double InputNoiseBand = 1000.0;
 
         public double PowerGain = 0.0;
         public double NoiseFigure = 0.0;

@@ -6,11 +6,28 @@
     font-family: sans-serif;
 }
 
-form { display: table; }
-p { display: table-row; }
-label { display: table-cell; text-align: right; }
-input { display: table-cell; text-align: center; }
-select { display: table-cell; text-align: center; }
+form {
+    display: table;
+}
+
+p {
+    display: table-row;
+}
+
+label {
+    display: table-cell;
+    text-align: right;
+}
+
+input {
+    display: table-cell;
+    text-align: center;
+}
+
+select {
+    display: table-cell;
+    text-align: center;
+}
 
 section {
     width: 99%;
@@ -25,12 +42,18 @@ section {
     text-align: left;
 }
 
+.node-head {
+    font-size: large;
+    font-weight: bold;
+    text-align: left;
+}
+
 .hidden {
     display: none;
 }
 
 .node-class {
     margin: 0.5% auto 0.25%;
-    border: 1px solid gray;
+    border: 1px solid lightgray;
     padding: 0.5%;
 }

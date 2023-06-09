@@ -118,6 +118,8 @@ const onCalculate = function() {
     let casc_op1db = Number.NaN;
     let casc_spower = 0.0;
     let casc_outpower = 0.0;
+    let casc_noisepower = 0.0;
+    let casc_rxsens = 0.0;
 
     nl_nodelist = [];
 
@@ -161,7 +163,7 @@ const onCalculate = function() {
         nl_nodelist[i].c_outpower = acc;
     }
 
-    casc_outpower = in_inpower + casc_gain;
+    casc_outpower = val_inpower + casc_gain;
 
     //
     // CASCADED SUPPLY POWER
@@ -201,21 +203,23 @@ const onCalculate = function() {
     casc_oip3 = get_dB(casc_oip3);
     casc_iip3 = casc_oip3 - casc_gain;
 
+    casc_noisepower = get_dB(boltz * temp * val_noiseband * 1000.0);
+    casc_rxsens = casc_noisepower + casc_nfig;
+    console.log(casc_outpower);
+    console.log(casc_noisepower);
+    console.log(boltz * temp * val_noiseband);
+
     rep_gain.value = casc_gain.toFixed(3);
     rep_nfig.value = casc_nfig.toFixed(3);
     rep_iip3.value = casc_iip3.toFixed(3);
     rep_oip3.value = casc_oip3.toFixed(3);
     rep_ip1db.value = casc_ip1db.toFixed(3);
     rep_op1db.value = casc_op1db.toFixed(3);
-
+    rep_noisepower.value = casc_noisepower.toFixed(3);
     rep_supplypower.value = casc_spower.toFixed(2);
+    rep_rxsens.value = casc_rxsens.toFixed(3);
 
     document.querySelector("#report").classList.remove("hidden");
-/*
-const rep_noisepower = document.querySelector("#rep-noisepower");
-const rep_supplypower = document.querySelector("#rep-supplypower");
-const rep_rxsens = document.querySelector("#rep-rxsens");
-*/
 };
 
 in_applybutton.addEventListener("click", onApply);

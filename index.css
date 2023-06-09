@@ -1,0 +1,36 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-size: large;
+    font-family: sans-serif;
+}
+
+form { display: table; }
+p { display: table-row; }
+label { display: table-cell; text-align: right; }
+input { display: table-cell; text-align: center; }
+select { display: table-cell; text-align: center; }
+
+section {
+    width: 99%;
+    margin: 0.5% auto 0.25%;
+    border: 1px solid black;
+    padding: 0.5%;
+}
+
+.section-head {
+    font-size: x-large;
+    font-weight: bold;
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
+
+.node-class {
+    margin: 0.5% auto 0.25%;
+    border: 1px solid gray;
+    padding: 0.5%;
+}

@@ -6,7 +6,7 @@
     font-family: sans-serif;
 }
 
-form {
+.grid {
     display: table;
 }
 
@@ -56,4 +56,9 @@ section {
     margin: 0.5% auto 0.25%;
     border: 1px solid lightgray;
     padding: 0.5%;
+}
+
+#nodes-list {
+    overflow-x:auto;
+    white-space: nowrap;
 }

@@ -8,9 +8,9 @@ class RxNode {
         this.ip1db = 0.0;
         this.op1db = 0.0;
         this.ivswr = 1.0;
-        this.ovswr = 1.0;
         this.voltage = 9.0;
         this.current = 0.1;
+        this.name = "doofus";
 
         this.c_gain = 0.0;
         this.c_nfig = 0.0;
@@ -27,9 +27,9 @@ class RxNode {
         this.gain = Number.parseFloat(element.querySelector(".node-powergain").value);
         this.nfig = Number.parseFloat(element.querySelector(".node-noisefigure").value);
         this.ivswr = Number.parseFloat(element.querySelector(".node-ivswr").value);
-        this.ovswr = Number.parseFloat(element.querySelector(".node-ovswr").value);
         this.voltage = Number.parseFloat(element.querySelector(".node-voltage").value);
         this.current = Number.parseFloat(element.querySelector(".node-current").value);
+        this.name = element.querySelector(".node-name").value;
 
         if(element.querySelector(".node-xip3-type").selectedIndex === 0) {
             this.iip3 = Number.parseFloat(element.querySelector(".node-xip3").value);
@@ -65,7 +65,6 @@ class RxNode {
 const in_inpower = document.querySelector("#inpower");
 const in_noiseband = document.querySelector("#noiseband");
 const in_nodecount = document.querySelector("#nodecount");
-const in_applybutton = document.querySelector("#applybutton");
 
 // Node list elements
 const nl_button = document.querySelector("#calcbutton");
@@ -82,6 +81,7 @@ const rep_op1db = document.querySelector("#rep-op1db");
 const rep_noisepower = document.querySelector("#rep-noisepower");
 const rep_supplypower = document.querySelector("#rep-supplypower");
 const rep_rxsens = document.querySelector("#rep-rxsens");
+let rep_chart = null;
 
 const onApply = function() {
     const amount = Number.parseInt(nodecount.value, 10);
@@ -89,6 +89,7 @@ const onApply = function() {
     
     for(let i = 0; i < amount; ++i) {
         const elem = nodetempl.content.cloneNode(true);
+        elem.querySelector(".node-index").innerText = (i + 1).toString(10);
         frag.append(elem);
     }
 
@@ -98,11 +99,14 @@ const onApply = function() {
 
     document.querySelector("#nodes").classList.remove("hidden");
     document.querySelector("#report").classList.add("hidden");
+    document.querySelector("#dynrange").classList.add("hidden");
 };
 
 const onCalculate = function() {
     const get_dB = function(k) { return 10.0 * Math.log10(k); };
+    const get_dBV = function(k) { return 20.0 * Math.log10(k); };
     const get_k = function(db) { return Math.pow(10.0, db / 10.0); };
+    const get_y = function(swr) { return ((swr - 1.0) / (swr + 1.0)); }
     const boltz = 1.38e-23;
     const temp = 290.0;
 
@@ -133,7 +137,7 @@ const onCalculate = function() {
     // CASCADED POWER GAIN
     //
     for(let i = 0; i < val_nodes.length; ++i) {
-        casc_gain += nl_nodelist[i].gain;
+        casc_gain += nl_nodelist[i].gain + get_dBV(1.0 - get_y(nl_nodelist[i].ivswr));
         nl_nodelist[i].c_gain = casc_gain;
     }
 
@@ -204,10 +208,7 @@ const onCalculate = function() {
     casc_iip3 = casc_oip3 - casc_gain;
 
     casc_noisepower = get_dB(boltz * temp * val_noiseband * 1000.0);
-    casc_rxsens = casc_noisepower + casc_nfig;
-    console.log(casc_outpower);
-    console.log(casc_noisepower);
-    console.log(boltz * temp * val_noiseband);
+    casc_rxsens = casc_noisepower + casc_nfig + casc_outpower; // assume SNR = 0
 
     rep_gain.value = casc_gain.toFixed(3);
     rep_nfig.value = casc_nfig.toFixed(3);
@@ -220,7 +221,54 @@ const onCalculate = function() {
     rep_rxsens.value = casc_rxsens.toFixed(3);
 
     document.querySelector("#report").classList.remove("hidden");
-};
+    document.querySelector("#dynrange").classList.remove("hidden");
 
-in_applybutton.addEventListener("click", onApply);
+    const ctx = document.getElementById("dynamic-range");
+    const mk_ds = function(title) { return { label: title, borderWidth: 4.0, data: [] }; }
+    let ds_gain = mk_ds("Power Gain [dB]");
+    let ds_nfig = mk_ds("Noise Figure [dB]");
+    let ds_ip1dB = mk_ds("IP1dB [dBm]");
+    let ds_op1dB = mk_ds("OP1dB [dBm]");
+    let ds_iip3 = mk_ds("IIP3 [dBm]");
+    let ds_oip3 = mk_ds("OIP3 [dBm]");
+    let node_labels = [];
+
+    for(let i = 0; i < val_nodes.length; ++i) {
+        if(nl_nodelist[i].name.match(/^ *$/) === null)
+            node_labels.push(nl_nodelist[i].name);
+        else
+            node_labels.push("Node #" + (i + 1).toString(10));
+        ds_gain.data.push(nl_nodelist[i].c_gain);
+        ds_nfig.data.push(nl_nodelist[i].c_nfig);
+        ds_ip1dB.data.push(nl_nodelist[i].c_ip1db);
+        ds_op1dB.data.push(nl_nodelist[i].c_op1db);
+        ds_iip3.data.push(nl_nodelist[i].c_iip3);
+        ds_oip3.data.push(nl_nodelist[i].c_oip3);
+    }
+
+    if(rep_chart !== null) {
+        // The chart needs to be destroyed
+        // before we can create a new one
+        rep_chart.destroy();
+    }
+
+    rep_chart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: node_labels,
+            datasets: [ ds_gain, ds_nfig, ds_ip1dB, ds_op1dB, ds_iip3, ds_oip3 ],
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                }
+            }
+        }
+    });
+};
+in_nodecount.addEventListener("keyup", onApply);
+in_nodecount.addEventListener("mouseup", onApply);
 nl_button.addEventListener("click", onCalculate);
+
+onApply();

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>rfe66/rxproj</title>
+        <link rel="stylesheet" href="index.dev.css"/>
+    </head>
+    <body>
+        <section id="input">
+            <div class="section-head">Setup</div>
+            <div class="section-stuff">
+                <div class="grid">
+                    <p><label for="nodecount">Node count:&nbsp;</label><input id="nodecount" type="number" value="1" min="1" step="1"/></p>
+                    <p><label for="inpower">Input power:&nbsp;</label><input id="inpower" type="number" value="-20" step="0.001"/>&nbsp;dBm</p>
+                    <p><label for="noiseband">Noise band:&nbsp;</label><input id="noiseband" type="number" value="1000" min="0"/>&nbsp;Hz</p>
+                </div>
+            </div>
+            <div id="nodes" class="hidden">
+                <div id="nodes-list"></div>
+                <div><button id="calcbutton">Calculate</button></div>
+            </div>
+        </section>
+        <section id="report" class="hidden">
+            <div class="section-head">Output</div>
+            <div class="section-stuff">
+                <div class="grid">
+                    <p><label for="rep-powergain">Power gain:&nbsp;</label><input type="text" id="rep-powergain" readonly/>&nbsp;dB</p>
+                    <p><label for="rep-noisefigure">Noise figure:&nbsp;</label><input type="text" id="rep-noisefigure" readonly/>&nbsp;dB</p>
+                    <p><label for="rep-ip1db">IP1dB:&nbsp;</label><input type="text" id="rep-ip1db" readonly/>&nbsp;dBm</p>
+                    <p><label for="rep-op1db">OP1dB:&nbsp;</label><input type="text" id="rep-op1db" readonly/>&nbsp;dBm</p>
+                    <p><label for="rep-iip3">IIP3:&nbsp;</label><input type="text" id="rep-iip3" readonly/>&nbsp;dBm</p>
+                    <p><label for="rep-oip3">OIP3:&nbsp;</label><input type="text" id="rep-oip3" readonly/>&nbsp;dBm</p>
+                    <p><label for="rep-noisepower">Noise power:&nbsp;</label><input type="text" id="rep-noisepower" readonly/>&nbsp;dBm</p>
+                    <p><label for="rep-rxsens">Sensitivity:&nbsp;</label><input type="text" id="rep-rxsens" readonly/>&nbsp;dBm</p>
+                    <p><label for="rep-supplypower">Supply power:&nbsp;</label><input type="text" id="rep-supplypower" readonly/>&nbsp;W</p>
+                </div>
+            </div>
+        </section>
+        <section id="dynrange" class="hidden">
+            <div class="section-head">Dynamic Range</div>
+            <div class="section-stuff">
+                <canvas id="dynamic-range"></canvas>
+            </div>
+        </section>
+
+        <template id="nodetempl">
+            <div class="node-class">
+                <div class="node-head">Node #<span class="node-index"></span></div>
+                <div class="node-stuff">
+                    <div class="grid">
+                        <p><label for="node-name">Name:&nbsp;</label><input class="node-name" type="text"/></p>
+                        <p><label for="node-powergain">Power gain:&nbsp;</label><input class="node-powergain" type="number" value="0" step="0.001"/>&nbsp;dB</p>
+                        <p><label for="node-noisefigure">Noise figure:&nbsp;</label><input class="node-noisefigure" type="number" value="0" step="0.001"/>&nbsp;dB</p>
+                        <p><label for="node-xp1db">P1dB:&nbsp;</label><input class="node-xp1db" type="number" value="0" step="0.001"/>&nbsp;<select class="node-xp1db-type"><option>input</option><option>output</option></select>&nbsp;dBm</p>
+                        <p><label for="node-xip3">IP3:&nbsp;</label><input class="node-xip3" type="number" value="0" step="0.001"/>&nbsp;<select class="node-xip3-type"><option>input</option><option>output</option></select>&nbsp;dBm</p>
+                        <p><label for="node-ivswr">Input VSWR:&nbsp;</label><input class="node-ivswr" type="number" value="1" min="1" step="0.001"/></p>
+                        <p><label for="node-voltage">Supply voltage:&nbsp;</label><input class="node-voltage" type="number" min="0" value="0.001" step="0.001"/>&nbsp;V</p>
+                        <p><label for="node-current">Supply current:&nbsp;</label><input class="node-current" type="number" min="0" value="0.001" step="0.001"/>&nbsp;A</p>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <script src="chart.js"></script>
+        <script src="index.dev.js"></script>
+    </body>
+</html>

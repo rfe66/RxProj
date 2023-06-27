@@ -1,67 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <link rel="stylesheet" href="index.css"/>
-        <meta charset="UTF-8"/>
-        <title>rfe66/rxproj</title>
-    </head>
-    <body>
-        <section id="input">
-            <div class="section-head">Setup</div>
-            <div class="section-stuff">
-                <div class="grid">
-                    <p><label for="nodecount">Node count:&nbsp;</label><input id="nodecount" type="number" value="1" min="1" step="1"/></p>
-                    <p><label for="inpower">Input power:&nbsp;</label><input id="inpower" type="number" value="-20" step="0.001"/>&nbsp;dBm</p>
-                    <p><label for="noiseband">Noise band:&nbsp;</label><input id="noiseband" type="number" value="1000" min="0"/>&nbsp;Hz</p>
-                </div>
-            </div>
-            <div id="nodes" class="hidden">
-                <div id="nodes-list"></div>
-                <div><button id="calcbutton">Calculate</button></div>
-            </div>
-        </section>
-        <section id="report" class="hidden">
-            <div class="section-head">Output</div>
-            <div class="section-stuff">
-                <div class="grid">
-                    <p><label for="rep-powergain">Power gain:&nbsp;</label><input type="text" id="rep-powergain" readonly/>&nbsp;dB</p>
-                    <p><label for="rep-noisefigure">Noise figure:&nbsp;</label><input type="text" id="rep-noisefigure" readonly/>&nbsp;dB</p>
-                    <p><label for="rep-ip1db">IP1dB:&nbsp;</label><input type="text" id="rep-ip1db" readonly/>&nbsp;dBm</p>
-                    <p><label for="rep-op1db">OP1dB:&nbsp;</label><input type="text" id="rep-op1db" readonly/>&nbsp;dBm</p>
-                    <p><label for="rep-iip3">IIP3:&nbsp;</label><input type="text" id="rep-iip3" readonly/>&nbsp;dBm</p>
-                    <p><label for="rep-oip3">OIP3:&nbsp;</label><input type="text" id="rep-oip3" readonly/>&nbsp;dBm</p>
-                    <p><label for="rep-noisepower">Noise power:&nbsp;</label><input type="text" id="rep-noisepower" readonly/>&nbsp;dBm</p>
-                    <p><label for="rep-rxsens">Sensitivity:&nbsp;</label><input type="text" id="rep-rxsens" readonly/>&nbsp;dBm</p>
-                    <p><label for="rep-supplypower">Supply power:&nbsp;</label><input type="text" id="rep-supplypower" readonly/>&nbsp;W</p>
-                </div>
-            </div>
-        </section>
-        <section id="dynrange" class="hidden">
-            <div class="section-head">Dynamic Range</div>
-            <div class="section-stuff">
-                <canvas id="dynamic-range"></canvas>
-            </div>
-        </section>
-
-        <template id="nodetempl">
-            <div class="node-class">
-                <div class="node-head">Node #<span class="node-index"></span></div>
-                <div class="node-stuff">
-                    <div class="grid">
-                        <p><label for="node-name">Name:&nbsp;</label><input class="node-name" type="text"/></p>
-                        <p><label for="node-powergain">Power gain:&nbsp;</label><input class="node-powergain" type="number" value="0" step="0.001"/>&nbsp;dB</p>
-                        <p><label for="node-noisefigure">Noise figure:&nbsp;</label><input class="node-noisefigure" type="number" value="0" step="0.001"/>&nbsp;dB</p>
-                        <p><label for="node-xp1db">P1dB:&nbsp;</label><input class="node-xp1db" type="number" value="0" step="0.001"/>&nbsp;<select class="node-xp1db-type"><option>input</option><option>output</option></select>&nbsp;dBm</p>
-                        <p><label for="node-xip3">IP3:&nbsp;</label><input class="node-xip3" type="number" value="0" step="0.001"/>&nbsp;<select class="node-xip3-type"><option>input</option><option>output</option></select>&nbsp;dBm</p>
-                        <p><label for="node-ivswr">Input VSWR:&nbsp;</label><input class="node-ivswr" type="number" value="1" min="1" step="0.001"/></p>
-                        <p><label for="node-voltage">Supply voltage:&nbsp;</label><input class="node-voltage" type="number" min="0" value="0.001" step="0.001"/>&nbsp;V</p>
-                        <p><label for="node-current">Supply current:&nbsp;</label><input class="node-current" type="number" min="0" value="0.001" step="0.001"/>&nbsp;A</p>
-                    </div>
-                </div>
-            </div>
-        </template>
-
-        <script src="chart.js"></script>
-        <script src="index.js"></script>
-    </body>
+<head>
+<meta charset=UTF-8>
+<title>rfe66/rxproj</title>
+<style>input,label,select{display:table-cell}.node-head,.section-head{font-weight:700;text-align:left}.node-class,section{margin:.5% auto .25%;padding:.5%}*{padding:0;margin:0;box-sizing:border-box;font-size:large;font-family:sans-serif}.grid{display:table}p{display:table-row}label{text-align:right}input,select{text-align:center}section{width:99%;border:1px solid gray}.section-head{font-size:x-large}.node-head{font-size:large}.hidden{display:none}.node-class{border:1px solid #d3d3d3}#nodes-list{overflow-x:auto;white-space:nowrap}</style>
+</head>
+<body>
+<section id=input>
+<div class=section-head>Setup</div>
+<div class=section-stuff>
+<div class=grid>
+<p><label for=nodecount>Node count:&nbsp;</label><input id=nodecount type=number value=1 min=1 step=1></p>
+<p><label for=inpower>Input power:&nbsp;</label><input id=inpower type=number value=-20 step=0.001>&nbsp;dBm</p>
+<p><label for=noiseband>Noise band:&nbsp;</label><input id=noiseband type=number value=1000 min=0>&nbsp;Hz</p>
+</div>
+</div>
+<div id=nodes class=hidden>
+<div id=nodes-list></div>
+<div><button id=calcbutton>Calculate</button></div>
+</div>
+</section>
+<section id=report class=hidden>
+<div class=section-head>Output</div>
+<div class=section-stuff>
+<div class=grid>
+<p><label for=rep-powergain>Power gain:&nbsp;</label><input id=rep-powergain readonly>&nbsp;dB</p>
+<p><label for=rep-noisefigure>Noise figure:&nbsp;</label><input id=rep-noisefigure readonly>&nbsp;dB</p>
+<p><label for=rep-ip1db>IP1dB:&nbsp;</label><input id=rep-ip1db readonly>&nbsp;dBm</p>
+<p><label for=rep-op1db>OP1dB:&nbsp;</label><input id=rep-op1db readonly>&nbsp;dBm</p>
+<p><label for=rep-iip3>IIP3:&nbsp;</label><input id=rep-iip3 readonly>&nbsp;dBm</p>
+<p><label for=rep-oip3>OIP3:&nbsp;</label><input id=rep-oip3 readonly>&nbsp;dBm</p>
+<p><label for=rep-noisepower>Noise power:&nbsp;</label><input id=rep-noisepower readonly>&nbsp;dBm</p>
+<p><label for=rep-rxsens>Sensitivity:&nbsp;</label><input id=rep-rxsens readonly>&nbsp;dBm</p>
+<p><label for=rep-supplypower>Supply power:&nbsp;</label><input id=rep-supplypower readonly>&nbsp;W</p>
+</div>
+</div>
+</section>
+<section id=dynrange class=hidden>
+<div class=section-head>Dynamic Range</div>
+<div class=section-stuff>
+<canvas id=dynamic-range></canvas>
+</div>
+</section>
+<template id=nodetempl>
+<div class=node-class>
+<div class=node-head>Node #<span class=node-index></span></div>
+<div class=node-stuff>
+<div class=grid>
+<p><label for=node-name>Name:&nbsp;</label><input class=node-name></p>
+<p><label for=node-powergain>Power gain:&nbsp;</label><input class=node-powergain type=number value=0 step=0.001>&nbsp;dB</p>
+<p><label for=node-noisefigure>Noise figure:&nbsp;</label><input class=node-noisefigure type=number value=0 step=0.001>&nbsp;dB</p>
+<p><label for=node-xp1db>P1dB:&nbsp;</label><input class=node-xp1db type=number value=0 step=0.001>&nbsp;<select class=node-xp1db-type><option>input</option><option>output</option></select>&nbsp;dBm</p>
+<p><label for=node-xip3>IP3:&nbsp;</label><input class=node-xip3 type=number value=0 step=0.001>&nbsp;<select class=node-xip3-type><option>input</option><option>output</option></select>&nbsp;dBm</p>
+<p><label for=node-ivswr>Input VSWR:&nbsp;</label><input class=node-ivswr type=number value=1 min=1 step=0.001></p>
+<p><label for=node-voltage>Supply voltage:&nbsp;</label><input class=node-voltage type=number min=0 value=0.001 step=0.001>&nbsp;V</p>
+<p><label for=node-current>Supply current:&nbsp;</label><input class=node-current type=number min=0 value=0.001 step=0.001>&nbsp;A</p>
+</div>
+</div>
+</div>
+</template>
+<script src=chart.js></script>
+<script>class RxNode{constructor(){this.gain=0,this.nfig=0,this.iip3=0,this.oip3=0,this.ip1db=0,this.op1db=0,this.ivswr=1,this.voltage=9,this.current=.1,this.name="doofus",this.c_gain=0,this.c_nfig=0,this.c_iip3=0,this.c_oip3=0,this.c_ip1db=0,this.c_op1db=0,this.c_spower=0,this.c_inpower=0,this.c_outpower=0}parse(e){this.gain=Number.parseFloat(e.querySelector(".node-powergain").value),this.nfig=Number.parseFloat(e.querySelector(".node-noisefigure").value),this.ivswr=Number.parseFloat(e.querySelector(".node-ivswr").value),this.voltage=Number.parseFloat(e.querySelector(".node-voltage").value),this.current=Number.parseFloat(e.querySelector(".node-current").value),this.name=e.querySelector(".node-name").value,this.xip3_input=0===e.querySelector(".node-xip3-type").selectedIndex,this.xp1db_input=0===e.querySelector(".node-xp1db-type").selectedIndex,this.xip3_input?(this.iip3=Number.parseFloat(e.querySelector(".node-xip3").value),this.oip3=this.iip3+this.gain):(this.oip3=Number.parseFloat(e.querySelector(".node-xip3").value),this.iip3=this.oip3-this.gain),this.xp1db_input?(this.ip1db=Number.parseFloat(e.querySelector(".node-xp1db").value),this.op1db=this.ip1db+this.gain-1):(this.op1db=Number.parseFloat(e.querySelector(".node-xp1db").value),this.ip1db=this.op1db-this.gain+1),this.c_gain=0,this.c_nfig=0,this.c_iip3=0,this.c_oip3=0,this.c_ip1db=0,this.c_op1db=0,this.c_spower=0,this.c_inpower=0,this.c_outpower=0}output(e){e.querySelector(".node-powergain").value=this.gain.toFixed(3),e.querySelector(".node-noisefigure").value=this.nfig.toFixed(3),e.querySelector(".node-ivswr").value=this.ivswr.toFixed(3),e.querySelector(".node-voltage").value=this.voltage.toFixed(3),e.querySelector(".node-current").value=this.current.toFixed(3),e.querySelector(".node-name").value=this.name,this.xip3_input?(e.querySelector(".node-xip3-type").selectedIndex=0,e.querySelector(".node-xip3").value=this.iip3.toFixed(3)):(e.querySelector(".node-xip3-type").selectedIndex=1,e.querySelector(".node-xip3").value=this.oip3.toFixed(3)),this.xp1db_input?(e.querySelector(".node-xp1db-type").selectedIndex=0,e.querySelector(".node-xp1db").value=this.ip1db.toFixed(3)):(e.querySelector(".node-xp1db-type").selectedIndex=1,e.querySelector(".node-xp1db").value=this.op1db.toFixed(3))}}const in_inpower=document.querySelector("#inpower"),in_noiseband=document.querySelector("#noiseband"),in_nodecount=document.querySelector("#nodecount"),nl_button=document.querySelector("#calcbutton"),nl_template=document.querySelector("#nodetempl");let nl_nodelist=[];const rep_gain=document.querySelector("#rep-powergain"),rep_nfig=document.querySelector("#rep-noisefigure"),rep_iip3=document.querySelector("#rep-iip3"),rep_oip3=document.querySelector("#rep-oip3"),rep_ip1db=document.querySelector("#rep-ip1db"),rep_op1db=document.querySelector("#rep-op1db"),rep_noisepower=document.querySelector("#rep-noisepower"),rep_supplypower=document.querySelector("#rep-supplypower"),rep_rxsens=document.querySelector("#rep-rxsens");let rep_chart=null;const onApply=function(){let e=Number.parseInt(in_nodecount.value,10),t=document.createDocumentFragment();for(let n=0;n<e;++n){let e=nodetempl.content.cloneNode(!0);e.querySelector(".node-index").innerText=(n+1).toString(10),n<nl_nodelist.length&&nl_nodelist[n].output(e),t.append(e)}let n=document.querySelector("#nodes-list");n.innerText="",n.append(t),document.querySelector("#nodes").classList.remove("hidden"),document.querySelector("#report").classList.add("hidden"),document.querySelector("#dynrange").classList.add("hidden")},onCalculate=function(){let e=function(e){return 10*Math.log10(e)},t=function(e){return Math.pow(10,e/10)},n=Number.parseFloat(in_inpower.value),o=Number.parseFloat(in_noiseband.value),i=document.querySelectorAll(".node-class"),l=0,r=0,d=Number.NaN,s=Number.NaN,p=Number.NaN,u=Number.NaN,a=0,c=0,_=0,h=0;nl_nodelist=[];for(let e=0;e<i.length;++e){let t=new RxNode;t.parse(i[e]),nl_nodelist.push(t)}for(let e=0;e<i.length;++e){var y;l+=nl_nodelist[e].gain+20*Math.log10(1-((y=nl_nodelist[e].ivswr)-1)/(y+1)),nl_nodelist[e].c_gain=l}for(let n=0,o=1;n<i.length;++n)r+=0===n?t(nl_nodelist[n].nfig):(t(nl_nodelist[n].nfig)-1)/o,nl_nodelist[n].c_nfig=e(r),o*=t(nl_nodelist[n].gain);r=e(r);for(let e=0,t=0;e<i.length;++e)nl_nodelist[e].c_inpower=0===e?in_inpower:t,t=nl_nodelist[e].c_inpower+nl_nodelist[e].gain,nl_nodelist[e].c_outpower=t;c=n+l;for(let e=0;e<i.length;++e)a+=nl_nodelist[e].voltage*nl_nodelist[e].current,nl_nodelist[e].c_spower=a;for(let n=0;n<i.length;++n)u=0===n?t(nl_nodelist[n].op1db):1/(1/u/t(nl_nodelist[n].gain)+1/t(nl_nodelist[n].op1db)),nl_nodelist[n].c_op1db=e(u),nl_nodelist[n].c_ip1db=nl_nodelist[n].c_op1db-nl_nodelist[n].gain+1;p=(u=e(u))-l+1;for(let n=0;n<i.length;++n)s=0===n?t(nl_nodelist[n].oip3):1/(1/s/t(nl_nodelist[n].gain)+1/t(nl_nodelist[n].oip3)),nl_nodelist[n].c_oip3=e(s),nl_nodelist[n].c_iip3=nl_nodelist[n].c_oip3-nl_nodelist[n].gain;d=(s=e(s))-l,h=(_=e(138e-25*290*o*1e3))+r+c,rep_gain.value=l.toFixed(3),rep_nfig.value=r.toFixed(3),rep_iip3.value=d.toFixed(3),rep_oip3.value=s.toFixed(3),rep_ip1db.value=p.toFixed(3),rep_op1db.value=u.toFixed(3),rep_noisepower.value=_.toFixed(3),rep_supplypower.value=a.toFixed(2),rep_rxsens.value=h.toFixed(3),document.querySelector("#report").classList.remove("hidden"),document.querySelector("#dynrange").classList.remove("hidden");let b=document.getElementById("dynamic-range"),g=function(e){return{label:e,borderWidth:4,data:[]}},m=g("Power Gain [dB]"),x=g("Noise Figure [dB]"),v=g("IP1dB [dBm]"),S=g("OP1dB [dBm]"),q=g("IIP3 [dBm]"),w=g("OIP3 [dBm]"),F=[];for(let e=0;e<i.length;++e)null===nl_nodelist[e].name.match(/^ *$/)?F.push(nl_nodelist[e].name):F.push("Node #"+(e+1).toString(10)),m.data.push(nl_nodelist[e].c_gain),x.data.push(nl_nodelist[e].c_nfig),v.data.push(nl_nodelist[e].c_ip1db),S.data.push(nl_nodelist[e].c_op1db),q.data.push(nl_nodelist[e].c_iip3),w.data.push(nl_nodelist[e].c_oip3);null!==rep_chart&&rep_chart.destroy(),rep_chart=new Chart(b,{type:"line",data:{labels:F,datasets:[m,x,v,S,q,w]},options:{scales:{y:{beginAtZero:!0}}}})};in_nodecount.addEventListener("keyup",onApply),in_nodecount.addEventListener("mouseup",onApply),nl_button.addEventListener("click",onCalculate),onApply()</script>
+</body>
 </html>

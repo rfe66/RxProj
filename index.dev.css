@@ -32,7 +32,7 @@ select {
 section {
     width: 99%;
     margin: 0.5% auto 0.25%;
-    border: 1px solid black;
+    border: 1px solid gray;
     padding: 0.5%;
 }
 

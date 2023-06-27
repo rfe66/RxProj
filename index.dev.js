@@ -31,7 +31,10 @@ class RxNode {
         this.current = Number.parseFloat(element.querySelector(".node-current").value);
         this.name = element.querySelector(".node-name").value;
 
-        if(element.querySelector(".node-xip3-type").selectedIndex === 0) {
+        this.xip3_input = (element.querySelector(".node-xip3-type").selectedIndex === 0);
+        this.xp1db_input = (element.querySelector(".node-xp1db-type").selectedIndex === 0);
+
+        if(this.xip3_input) {
             this.iip3 = Number.parseFloat(element.querySelector(".node-xip3").value);
             this.oip3 = this.iip3 + this.gain;
         }
@@ -40,7 +43,7 @@ class RxNode {
             this.iip3 = this.oip3 - this.gain;
         }
 
-        if(element.querySelector(".node-xp1db-type").selectedIndex === 0) {
+        if(this.xp1db_input) {
             this.ip1db = Number.parseFloat(element.querySelector(".node-xp1db").value);
             this.op1db = this.ip1db + this.gain - 1.0;
         }
@@ -58,6 +61,33 @@ class RxNode {
         this.c_spower = 0.0;
         this.c_inpower = 0.0;
         this.c_outpower = 0.0;
+    }
+
+    output(element) {
+        element.querySelector(".node-powergain").value = this.gain.toFixed(3);
+        element.querySelector(".node-noisefigure").value = this.nfig.toFixed(3);
+        element.querySelector(".node-ivswr").value = this.ivswr.toFixed(3);
+        element.querySelector(".node-voltage").value = this.voltage.toFixed(3);
+        element.querySelector(".node-current").value = this.current.toFixed(3);
+        element.querySelector(".node-name").value = this.name;
+
+        if(this.xip3_input) {
+            element.querySelector(".node-xip3-type").selectedIndex = 0;
+            element.querySelector(".node-xip3").value = this.iip3.toFixed(3);
+        }
+        else {
+            element.querySelector(".node-xip3-type").selectedIndex = 1;
+            element.querySelector(".node-xip3").value = this.oip3.toFixed(3);
+        }
+
+        if(this.xp1db_input) {
+            element.querySelector(".node-xp1db-type").selectedIndex = 0;
+            element.querySelector(".node-xp1db").value = this.ip1db.toFixed(3);
+        }
+        else {
+            element.querySelector(".node-xp1db-type").selectedIndex = 1;
+            element.querySelector(".node-xp1db").value = this.op1db.toFixed(3);
+        }
     }
 };
 
@@ -84,12 +114,14 @@ const rep_rxsens = document.querySelector("#rep-rxsens");
 let rep_chart = null;
 
 const onApply = function() {
-    const amount = Number.parseInt(nodecount.value, 10);
+    const amount = Number.parseInt(in_nodecount.value, 10);
     const frag = document.createDocumentFragment();
     
     for(let i = 0; i < amount; ++i) {
         const elem = nodetempl.content.cloneNode(true);
         elem.querySelector(".node-index").innerText = (i + 1).toString(10);
+        if(i < nl_nodelist.length)
+            nl_nodelist[i].output(elem);
         frag.append(elem);
     }
 

@@ -62,33 +62,6 @@ class RxNode {
         this.c_inpower = 0.0;
         this.c_outpower = 0.0;
     }
-
-    output(element) {
-        element.querySelector(".node-powergain").value = this.gain.toFixed(3);
-        element.querySelector(".node-noisefigure").value = this.nfig.toFixed(3);
-        element.querySelector(".node-ivswr").value = this.ivswr.toFixed(3);
-        element.querySelector(".node-voltage").value = this.voltage.toFixed(3);
-        element.querySelector(".node-current").value = this.current.toFixed(3);
-        element.querySelector(".node-name").value = this.name;
-
-        if(this.xip3_input) {
-            element.querySelector(".node-xip3-type").selectedIndex = 0;
-            element.querySelector(".node-xip3").value = this.iip3.toFixed(3);
-        }
-        else {
-            element.querySelector(".node-xip3-type").selectedIndex = 1;
-            element.querySelector(".node-xip3").value = this.oip3.toFixed(3);
-        }
-
-        if(this.xp1db_input) {
-            element.querySelector(".node-xp1db-type").selectedIndex = 0;
-            element.querySelector(".node-xp1db").value = this.ip1db.toFixed(3);
-        }
-        else {
-            element.querySelector(".node-xp1db-type").selectedIndex = 1;
-            element.querySelector(".node-xp1db").value = this.op1db.toFixed(3);
-        }
-    }
 };
 
 // Input parameters elements
@@ -111,6 +84,7 @@ const rep_op1db = document.querySelector("#rep-op1db");
 const rep_noisepower = document.querySelector("#rep-noisepower");
 const rep_supplypower = document.querySelector("#rep-supplypower");
 const rep_rxsens = document.querySelector("#rep-rxsens");
+const rep_dynrange = document.querySelector("#rep-dynrange");
 let rep_chart = null;
 
 const onApply = function() {
@@ -120,8 +94,6 @@ const onApply = function() {
     for(let i = 0; i < amount; ++i) {
         const elem = nodetempl.content.cloneNode(true);
         elem.querySelector(".node-index").innerText = (i + 1).toString(10);
-        if(i < nl_nodelist.length)
-            nl_nodelist[i].output(elem);
         frag.append(elem);
     }
 
@@ -131,7 +103,7 @@ const onApply = function() {
 
     document.querySelector("#nodes").classList.remove("hidden");
     document.querySelector("#report").classList.add("hidden");
-    document.querySelector("#dynrange").classList.add("hidden");
+    document.querySelector("#chart").classList.add("hidden");
 };
 
 const onCalculate = function() {
@@ -153,9 +125,9 @@ const onCalculate = function() {
     let casc_ip1db = Number.NaN;
     let casc_op1db = Number.NaN;
     let casc_spower = 0.0;
-    let casc_outpower = 0.0;
-    let casc_noisepower = 0.0;
+    let casc_thnoise = 0.0;
     let casc_rxsens = 0.0;
+    let casc_dynrange = 0.0;
 
     nl_nodelist = [];
 
@@ -199,8 +171,6 @@ const onCalculate = function() {
         nl_nodelist[i].c_outpower = acc;
     }
 
-    casc_outpower = val_inpower + casc_gain;
-
     //
     // CASCADED SUPPLY POWER
     //
@@ -239,8 +209,9 @@ const onCalculate = function() {
     casc_oip3 = get_dB(casc_oip3);
     casc_iip3 = casc_oip3 - casc_gain;
 
-    casc_noisepower = get_dB(boltz * temp * val_noiseband * 1000.0);
-    casc_rxsens = casc_noisepower + casc_nfig + casc_outpower; // assume SNR = 0
+    casc_thnoise = get_dB(boltz * temp * val_noiseband * 1000.0);
+    casc_rxsens = casc_thnoise + casc_nfig; // assume SNR = 0
+    casc_dynrange = casc_ip1db - casc_rxsens;
 
     rep_gain.value = casc_gain.toFixed(3);
     rep_nfig.value = casc_nfig.toFixed(3);
@@ -248,12 +219,13 @@ const onCalculate = function() {
     rep_oip3.value = casc_oip3.toFixed(3);
     rep_ip1db.value = casc_ip1db.toFixed(3);
     rep_op1db.value = casc_op1db.toFixed(3);
-    rep_noisepower.value = casc_noisepower.toFixed(3);
+    rep_noisepower.value = casc_thnoise.toFixed(3);
     rep_supplypower.value = casc_spower.toFixed(2);
     rep_rxsens.value = casc_rxsens.toFixed(3);
+    rep_dynrange.value = casc_dynrange.toFixed(3);
 
     document.querySelector("#report").classList.remove("hidden");
-    document.querySelector("#dynrange").classList.remove("hidden");
+    document.querySelector("#chart").classList.remove("hidden");
 
     const ctx = document.getElementById("dynamic-range");
     const mk_ds = function(title) { return { label: title, borderWidth: 4.0, data: [] }; }
